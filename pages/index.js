@@ -26,11 +26,35 @@ function ProfileSideBar(propriedades) {
   
 }
 
+function ProfileRelationsBox(propriedades){
+    return (
+      <ProfileRelationsBoxWrapper>
+      <p>{propriedades.title} ({propriedades.items.length})</p>
+
+      <ul>
+        {/*seguidores.map((itemAtual) => {
+              return(
+                <li key={itemAtual}>
+                  <a href={`/users/${itemAtual}`}>
+                    <img src={`https://github.com/${itemAtual}.png`} />
+                    <span>{itemAtual}</span>
+                  </a>
+                </li>
+              )
+            
+        })*/}
+      </ul>
+    </ProfileRelationsBoxWrapper>
+    )
+}
+
+
+
 
 export default function Home() {
   
   const gitHubUser = 'Hibrael01'
-  const [comunidades, setComunidades] = React.useState(['Alurakut']);
+  const [comunidades, setComunidades] = React.useState([]);
 
   /*const comunidades = [
       'Alurakut'
@@ -38,6 +62,20 @@ export default function Home() {
 
   const pessoasFavoritas = ['rafaballerini', 'omariosouto', 'juunegreiros', 'felipefialho', 'gustavoguanabara', 'marcobrunodev']
   
+  //Pegar array de dados do github
+  const [seguidores, setSeguidores] = React.useState([]);
+  React.useEffect(function(){
+
+    fetch('https://api.github.com/users/peas/followers').then(function (serverResponse){
+
+      return serverResponse.json()
+    }).then(function (completeResponse){
+      setSeguidores(completeResponse)
+    })
+
+  }, [])
+
+
   return (
 
     <>
@@ -65,15 +103,19 @@ export default function Home() {
           <form onSubmit={function createComunity(e){
             e.preventDefault();
 
-            id: new Date().toISOString;
-
             const dataForm = new FormData(e.target);
             console.log(dataForm.get('title'))
+
+            const comunidade = {
+              id: new Date().toISOString,
+              title: dataForm.get('title'),
+              image: dataForm.get('image'),
+            }
 
             if(dataForm.get('title') == ''){
               alert('Insira um nome para a comunidade')
             }else{
-              const novasComunidades = [...comunidades, dataForm.get('title')]
+              const novasComunidades = [...comunidades, comunidade]
               setComunidades(novasComunidades)
             }  
             
@@ -81,11 +123,16 @@ export default function Home() {
           }}>
 
             <div>
+
               <input placeholder="Qual vai ser o nome da sua comunidade?"
               name="title"
               aria-label="Qual vai ser o nome da sua comunidade?">
               </input>
-              
+              <input placeholder="Qual a URL da imagem de sua comunidade?"
+              name="image"
+              aria-label="Qual a URL da imagem de sua comunidade?">
+              </input>
+
             </div>
             <button>Criar comunidade</button>
             
@@ -95,19 +142,24 @@ export default function Home() {
       </div> 
 
       <div className="profileRelationsArea" style={{gridArea: 'profileRelationsArea'}}>
+
+
+        <ProfileRelationsBox title ='Seguidores: ' items={seguidores}/>  
+
         <ProfileRelationsBoxWrapper>
           <p>Pessoas Favoritas Dev: ({pessoasFavoritas.length})</p>
 
           <ul>
             {pessoasFavoritas.map((gitHubUser) => {
-                return(
-                  <li key={gitHubUser}>
-                    <a href={`/users/${gitHubUser}`} key={gitHubUser}>
-                      <img src={`https://github.com/${gitHubUser}.png`} />
-                      <span>{gitHubUser}</span>
-                    </a>
-                  </li>
-                )
+                  return(
+                    <li key={gitHubUser}>
+                      <a href={`/users/${gitHubUser}`} key={gitHubUser}>
+                        <img src={`https://github.com/${gitHubUser}.png`} />
+                        <span>{gitHubUser}</span>
+                      </a>
+                    </li>
+                  )
+                
             })}
           </ul>
         </ProfileRelationsBoxWrapper>
@@ -119,9 +171,9 @@ export default function Home() {
             {comunidades.map((comunidadeAtual) => {
                 return(
                   <li key={comunidadeAtual.id}>
-                    <a href={`/users/${comunidadeAtual}`}>
-                      <img src={`https://yt3.ggpht.com/ytc/AKedOLRszi3O39AB5-uw_1jkrxJppwegjToBgIKFIOqiiA=s900-c-k-c0x00ffffff-no-rj`} />
-                      <span>{comunidadeAtual}</span>
+                    <a href={`/users/${comunidadeAtual.title}`}>
+                      <img src={comunidadeAtual.image} />
+                      <span>{comunidadeAtual.title}</span>
                     </a>
                   </li>
                 )
