@@ -1,7 +1,7 @@
-import { createGlobalStyle, ThemeProvider } from 'styled-components'
-import { AlurakutStyles } from '../src/lib/AlurakutCommons'
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import { AlurakutStyles } from '../src/lib/AlurakutCommons';
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle /*CSS*/`
 
 * {
     margin:0;
@@ -15,7 +15,7 @@ body {
     padding: 0;
     box-sizing: border-box;
     font-family:sans-serif;
-    background-color: #D9E6F6;
+    background-color: #9EAAAD;
   }
 
   #_next {
@@ -29,7 +29,10 @@ body {
     height: auto;
     display:block;
     border-radius: 10px;
+
   }
+
+  ${AlurakutStyles}
 `
 
 const theme = {
